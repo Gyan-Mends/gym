@@ -414,6 +414,7 @@ $("#adminRegister").click(function (event) {
 
 });
 
+
 ///admin side plan registration
 ///admin side plan registration
 $("#addplan").click(function (event) {
@@ -525,178 +526,115 @@ $("#addplan").click(function (event) {
 
 ///admin side member edit
 ///admin side member edit
-function editUser(user_edit) {
+function editUser(user_edit_id) {
     $.ajax({
         url: "../api.php",
         type: "GET",
         data: {
-            edituser: "fetch",
-            user_edit: user_edit
-        },
+            user_edit_id : user_edit_id,
+            editUser: "editUser"
+        }, 
         success: function (response) {
             if (response.status === 200) {
-                const userData = response.data;
-
-                if (userData) {
-                     // Assuming you're expecting a single user's data
-
+                response.data.forEach(item => {
                     Swal.fire({
-                        title: "Edit member details",
+                        title: "Edit user details",
                         html: `
-                            <form id="registrationForm" class="grid grid-cols-2 gap-10 mt-6">
+                            <form id="registrationForm" class=" mt-6">
                                 <div>
-                                    <h5 class="text-bold"><b>Personal Details</b></h5>
+                                  
                                     <div class="mt-8">
-                                        <label class="text-left text-sm" for="fName"${userData.fName } value="">First Name</label>
-                                        <input class="form-control" type="text" placeholder="First Name" id="fName" required><br>
-                                        <label class="text-left text-sm" for="lName">Last Name</label>
-                                        <input class="form-control" type="text" placeholder="Last Name" id="lName" required><br>
-                                        <label class="text-left text-sm" for="role">Role</label>
-                                        <select class="form-control" id="role" required>
-                                            <option value="">-- Select Role --</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="member">Member</option>
-                                            <option value="trainer">Trainer</option>
-                                        </select><br>
-                                        <label class="text-left text-sm" for="phoneNumber">Phone</label>
-                                        <input class="form-control" type="phone" placeholder="Phone No" id="phoneNumber" required><br>
-                                        <label class="text-left text-sm" for="gender">Gender</label>
-                                        <select class="form-control" id="gender" required>
-                                            <option value="">Choose Gender</option>
-                                            <option value="Male">Male</option>
-                                            <option value="Female">Female</option>
-                                        </select>
+                                        <label class="text-left text-sm" style="display: block;">Id</label>
+                                        <input value="${item.id}" class="form-control bg-gray-50" type="text" id="id" required><br>
+
+                                        <label class="text-left text-sm" style="display: block;">First Name</label>
+                                        <input value="${item.first_name}" class="form-control bg-gray-50" type="text" id="fName" required><br>
+                
+                                        <label class="text-left text-sm" style="display: block;">Last Name</label>
+                                        <input value="${item.last_name}" class="form-control bg-gray-50"  type="text" placeholder="Last Name" id="lName" required><br>
+                                        
+                                        <label class="text-left text-sm" style="display: block;">Role</label>
+                                        <input value="${item.gender}" class="form-control"  type="text" placeholder="Last Name" id="gender" required><br>
+                                        
+                
+                                        <label class="text-left text-sm" style="display: block;">Phone</label>
+                                        <input value="${item.pone_number}"  class="form-control"  type="phone" placeholder="Phone No" id="phoneNumber" required><br>
+                                        
+                                        <label class="text-left text-sm" style="display: block;">Gender</label>
+                                        <input value="${item.username}"  class="form-control"  type="phone" placeholder="Phone No" id="username" required><br>
+
+                                        <label class="text-left text-sm" style="display: block;">Email</label>
+                                        <input value="${item.email}"  class="form-control"  type="phone" placeholder="Phone No" id="email" required><br>
+                                        
                                     </div>
                                 </div>
-                                <div>
-                                    <h5><b>Login Details</b></h5>
-                                    <div class="mt-8">
-                                        <label class="text-left text-sm" for="username">Username</label>
-                                        <input class="form-control" type="text" placeholder="Username" id="username" required><br>
-                                        <label class="text-left text-sm" for="mail">Email</label>
-                                        <input class="form-control" type="email" placeholder="Email" id="mail" required><br>
-                                        <label class="text-left text-sm" for="pas">Password</label>
-                                        <input class="form-control" type="password" placeholder="Password" id="pas" required><br>
-                                        <label class="text-left text-sm" for="CPassword">Confirm Password</label>
-                                        <input class="form-control" type="password" placeholder="Confirm Password" id="CPassword" required><br>
-                                        <label class="text-left text-sm" for="profile">Profile</label>
-                                        <input class="form-control" type="file" id="profile">
-                                    </div>
-                                </div>
+                                
                             </form>
                         `,
                         showCancelButton: true,
                         confirmButtonText: "Register",
                         cancelButtonText: "Close",
                         allowOutsideClick: false,
-                    }).then(function (result) {
-                        if (result.isConfirmed) {
-                            var fName = $.trim($("#fName").val());
-                            var lName = $.trim($("#lName").val());
-                            var role = $.trim($("#role").val());
-                            var phoneNumber = $.trim($("#phoneNumber").val());
-                            var gender = $.trim($("#gender").val());
-                            var username = $.trim($("#username").val());
-                            var mail = $.trim($("#mail").val());
-                            var pas = $.trim($("#pas").val());
-                            var CPassword = $.trim($("#CPassword").val());
-                            var profile = $.trim($("#profile").val());
-
-                            if (
-                                fName === "" || lName === "" || role === "" || 
-                                phoneNumber === "" || gender === "" || 
-                                username === "" || mail === ""
-                            ) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "All required fields must be filled",
-                                    timer: 2000
-                                });
-                            } else if (pas !== CPassword) {
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Password does not match",
-                                    timer: 2000
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: "question",
-                                    title: "Are you sure you want to update the details?",
-                                    showConfirmButton: true,
-                                    confirmButtonText: "Yes",
-                                    showCancelButton: true,
-                                    cancelButtonText: "No"
-                                }).then(function (result) {
-                                    if (result.isConfirmed) {
-                                        $.ajax({
-                                            url: "../api.php",
-                                            type: "POST",
-                                            data: {
-                                                userId: user_edit,
-                                                fName: fName,
-                                                lName: lName,
-                                                role: role,
-                                                phoneNumber: phoneNumber,
-                                                gender: gender,
-                                                username: username,
-                                                mail: mail,
-                                                pas: pas,
-                                                CPassword: CPassword,
-                                                profile: profile,
-                                                adminregister: "adminregister",
-                                            },
-                                            success: function (response) {
-                                                if (response.status === 200) {
-                                                    Swal.fire({
-                                                        icon: "success",
-                                                        title: "User details updated successfully",
-                                                        timer: 2000
-                                                    });
-                                                } else {
-                                                    Swal.fire({
-                                                        icon: "error",
-                                                        title: "Unable to update user details",
-                                                        timer: 2000
-                                                    });
-                                                }
-                                            },
-                                            error: function () {
+                
+                    }).then(function (response){
+                        if(response.isConfirmed){
+                            var id = $.trim($("#id").val())
+                            var fName = $.trim($("#fName").val())
+                            var lName = $.trim($("#lName").val())
+                            var gender = $.trim($("#gender").val())
+                            var phoneNumber = $.trim($("#phoneNumber").val())
+                            var username = $.trim($("#username").val())
+                            var email = $.trim($("#email").val())
+                            Swal.fire({
+                                icon : "question",
+                                title: "Are you sure to apply changes",
+                                showCancelButton: true,
+                                confirmButtonText: "Yhep",
+                                cancelButtonText: "Nhop",
+                                allowOutsideClick: false,
+                            }).then(function (results){
+                                if(results.isConfirmed){
+                                    
+                                    $.ajax({
+                                        url: "../api.php",
+                                        type: "POST",
+                                        data: {
+                                            user_edit_id : user_edit_id,
+                                            id:id,
+                                            fName:fName,
+                                            lName:lName,
+                                            gender:gender,
+                                            phoneNumber:phoneNumber,
+                                            username:username,
+                                            email:email,
+                                            updateUser: "updateUser"
+                                        }, 
+                                        success: function (response){
+                                            if(response.status == 200){
                                                 Swal.fire({
-                                                    icon: "error",
-                                                    title: "AJAX request failed",
-                                                    timer: 2000
-                                                });
+                                                    icon:"success",
+                                                    title:"User updated successfully",
+                                                    timer:2000
+                                                })
+                                            }else{
+                                                Swal.fire({
+                                                    icon:"error",
+                                                    title:"UnaBle to update user",
+                                                    timer:2000
+                                                })
                                             }
-                                        });
-                                    }
-                                });
-                            }
+                                        }
+                                    })
+                                }
+                            })
                         }
-                    });
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "No user data found",
-                        timer: 2000
-                    });
-                }
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Unable to fetch user data",
-                    timer: 2000
-                });
+                    })
+                })
             }
-        },
-        error: function () {
-            Swal.fire({
-                icon: "error",
-                title: "AJAX request failed",
-                timer: 2000
-            });
         }
-    });
+    })
 }
+editUser()
 
 
 

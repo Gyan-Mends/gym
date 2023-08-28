@@ -231,7 +231,63 @@ if(isset($_POST["registermember"])) {
     header("Content-Type: application/json");
     echo json_encode($response);
 }
+}
 
+//admin side user edit
+//fadmin side user edit
+if(isset($_GET["editUser"])){
+    $user_edit_id  =  $_GET["user_edit_id"];
+    //Selecl query
+    $select_query= mysqli_query($conn, "SELECT * FROM registeration WHERE id = '$user_edit_id  '");
+
+    if(mysqli_num_rows($select_query) > 0){
+        $response = [
+            'status' => 200,
+            'message' => 'data fetched successfull',
+            'data' => []
+        ];
+
+        while($row = mysqli_fetch_assoc($select_query)) {
+            $response["data"][] = [
+                'id' => $row["id"],
+                'first_name' => $row["first_name"],
+                'last_name' => $row["last_name"],
+                'role' => $row["role"],
+                'phone_numer' => $row["phone_number"],
+                'gender' => $row["gender"],
+                'username' => $row["username"],
+                'email' => $row["email"],
+            ];
+        }
+        
+    }
+
+       // Send the response back to the AJAX request
+       header("Content-Type: application/json");
+       echo json_encode($response);
+}
+if(isset($_POST["updateUser"])){
+    $user_edit_id  =  $_POST["user_edit_id"];
+    $id = $_POST["id"];
+    $fName = $_POST["fName"];
+    $lName = $_POST["lName"];
+    $gender = $_POST["gender"];
+    $phoneNumber = $_POST["phoneNumber"];
+    $username = $_POST["username"];
+    $email = $_POST["email"];
+
+    $updateQuery = "UPDATE registeration SET id='$id', first_name='$fName', last_name ='$lName', gender='$gender', phone_number='$phoneNumber', username='$username', email='$email' WHERE id=$user_edit_id";
+
+    if($query){
+        $response = [
+            'status' => 200
+        ];
+    }
+
+
+      // Send the response back to the AJAX request
+      header("Content-Type: application/json");
+      echo json_encode($response);
 }
 
 //admin side plan regiteration
